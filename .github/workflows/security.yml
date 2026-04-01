@@ -1,0 +1,59 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: mkdir -p reports
+
+      # 依存パッケージ脆弱性チェック
+      - name: pnpm audit (JSON report)
+        run: pnpm audit --json > reports/pnpm-audit.json 2>&1 || true
+
+      # ファイルシステムスキャン（依存 + Dockerfile + シークレット検知）
+      - name: Trivy FS Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: json
+          output: reports/trivy-results.json
+          severity: HIGH,CRITICAL
+          exit-code: 0
+
+      # SAST（静的アプリケーションセキュリティテスト）
+      - name: Semgrep SAST
+        run: |
+          pip3 install semgrep
+          semgrep scan --config "p/javascript" --config "p/typescript" --json -o reports/semgrep-results.json . 2>&1 || true
+
+      # レポート保存（失敗時も必ず保存）
+      - name: Upload Security Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: reports/
+          retention-days: 30
+
+      # HIGH以上の脆弱性があればジョブを失敗させる
+      - name: Fail on high/critical vulnerabilities
+        run: pnpm audit --audit-level=high

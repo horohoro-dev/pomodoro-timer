@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      AUTH_SECRET: ci-dummy-secret-value
+      AUTH_GOOGLE_ID: dummy
+      AUTH_GOOGLE_SECRET: dummy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
