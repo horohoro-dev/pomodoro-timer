@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    image: pomodoro-timer
+    container_name: pomodoro-timer
+    volumes:
+      - .:/workspace
+      - ${HOME}/.claude:/root/.claude
+      - ${HOME}/.claude.json:/root/.claude.json
+      - ${HOME}/.agents:/root/.agents
+      - ${HOME}/.config/ccstatusline:/root/.config/ccstatusline
+      - ${HOME}/.gitconfig:/root/.gitconfig:ro
+      - node_modules:/workspace/node_modules
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+volumes:
+  node_modules:
