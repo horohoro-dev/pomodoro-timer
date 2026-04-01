@@ -6,6 +6,7 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
+    // biome-ignore lint/style/noNonNullAssertion: 環境変数はランタイムで必ず設定される前提
     url: process.env.DATABASE_URL!,
   },
 });

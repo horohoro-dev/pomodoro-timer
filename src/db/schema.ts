@@ -1,10 +1,10 @@
 import {
+  integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
-  integer,
   uuid,
-  primaryKey,
 } from "drizzle-orm/pg-core";
 
 // ==========================================
@@ -40,7 +40,7 @@ export const accounts = pgTable(
   },
   (account) => [
     primaryKey({ columns: [account.provider, account.providerAccountId] }),
-  ]
+  ],
 );
 
 export const sessions = pgTable("session", {
@@ -62,7 +62,7 @@ export const verificationTokens = pgTable(
     primaryKey({
       columns: [verificationToken.identifier, verificationToken.token],
     }),
-  ]
+  ],
 );
 
 // ==========================================

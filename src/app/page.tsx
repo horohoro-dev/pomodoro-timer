@@ -14,12 +14,8 @@ export default function Home() {
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
           {tc("appName")}
         </h1>
-        <p className="text-lg text-muted-foreground sm:text-xl">
-          {t("title")}
-        </p>
-        <p className="max-w-md text-muted-foreground">
-          {t("subtitle")}
-        </p>
+        <p className="text-lg text-muted-foreground sm:text-xl">{t("title")}</p>
+        <p className="max-w-md text-muted-foreground">{t("subtitle")}</p>
         <div className="flex flex-col gap-4 sm:flex-row">
           <Link
             href="/timer"

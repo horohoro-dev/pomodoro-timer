@@ -1,11 +1,7 @@
 import { Header } from "@/components/layout/header";
 
 // アプリ内共通レイアウト（ヘッダー付き）
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
