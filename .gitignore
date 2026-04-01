@@ -19,6 +19,9 @@
 
 # production
 /build
+.omc/*
+.omc/project-memory.json
+.pnpm-store/*
 
 # misc
 .DS_Store
