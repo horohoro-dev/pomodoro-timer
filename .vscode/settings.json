@@ -1,0 +1,14 @@
+{
+  "git.decorations.enabled": true,
+  "explorer.decorations.colors": true,
+  "explorer.decorations.badges": true,
+  "workbench.colorCustomizations": {
+    "gitDecoration.untrackedResourceForeground": "#22c55e",
+    "gitDecoration.modifiedResourceForeground": "#f59e0b",
+    "gitDecoration.addedResourceForeground": "#22d3ee",
+    "gitDecoration.deletedResourceForeground": "#ef4444",
+    "gitDecoration.conflictingResourceForeground": "#f97316",
+    "gitDecoration.ignoredResourceForeground": "#496b71",
+    "gitDecoration.stageModifiedResourceForeground": "#a78bfa"
+  }
+}
