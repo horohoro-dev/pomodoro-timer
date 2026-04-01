@@ -1,0 +1,47 @@
+{
+  "common": {
+    "appName": "Pomodoro Timer",
+    "timer": "Timer",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "language": "Language"
+  },
+  "home": {
+    "title": "Maximize Your Focus",
+    "subtitle": "Boost your productivity with the Pomodoro Technique. Create a rhythm of focus and rest with the timer to enhance your performance.",
+    "startTimer": "Start Timer",
+    "viewDashboard": "View Dashboard"
+  },
+  "timer": {
+    "title": "Timer",
+    "work": "Work",
+    "break": "Break",
+    "longBreak": "Long Break",
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "skip": "Skip",
+    "session": "Session",
+    "sets": "Sets",
+    "placeholder": "Timer feature coming soon"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "heatmap": "Heatmap",
+    "weeklyChart": "Weekly Chart",
+    "hourlyChart": "Hourly Chart",
+    "totalTime": "Total Time",
+    "noData": "No data available",
+    "loginRequired": "Please log in to view the dashboard",
+    "placeholder": "Dashboard feature coming soon"
+  },
+  "auth": {
+    "loginWith": "Login with {provider}",
+    "loginRequired": "Login required",
+    "guest": "Guest"
+  }
+}
