@@ -36,5 +36,6 @@ docker compose down -v
 ## 備考
 
 - Docker 内の `node_modules` は named volume で分離されている（Linux 用バイナリ）
-- ホスト（Mac）側でも `pnpm install` して Mac 用の `node_modules` を使う
-- `package.json` を変更したら両方で `pnpm install` を実行すること
+- ホスト側では `pnpm install` を実行しない（セキュリティ上、node_modules はDocker内のみに配置）
+- エディタの型解決には Cursor の Dev Containers 拡張でDocker内から開くことを推奨
+- `package.json` を変更したらDocker内で `pnpm install` を実行すること
