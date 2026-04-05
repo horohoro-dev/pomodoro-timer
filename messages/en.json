@@ -27,7 +27,9 @@
     "skip": "Skip",
     "session": "Session",
     "sets": "Sets",
-    "placeholder": "Timer feature coming soon"
+    "placeholder": "Timer feature coming soon",
+    "loopCount": "Loop {count}",
+    "totalTime": "Total {time}"
   },
   "dashboard": {
     "title": "Dashboard",

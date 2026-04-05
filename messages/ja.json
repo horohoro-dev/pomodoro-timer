@@ -27,7 +27,9 @@
     "skip": "スキップ",
     "session": "セッション",
     "sets": "セット",
-    "placeholder": "タイマー機能は近日公開予定です"
+    "placeholder": "タイマー機能は近日公開予定です",
+    "loopCount": "ループ {count} 周目",
+    "totalTime": "合計 {time}"
   },
   "dashboard": {
     "title": "ダッシュボード",
