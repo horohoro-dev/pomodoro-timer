@@ -35,10 +35,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-card">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         {/* アプリ名 */}
-        <Link
-          href="/"
-          className="text-lg font-bold text-foreground"
-        >
+        <Link href="/" className="text-lg font-bold text-foreground">
           {t("appName")}
         </Link>
 
@@ -52,7 +49,7 @@ export function Header() {
                 "rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 pathname === link.href
                   ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
               {link.label}
@@ -61,6 +58,7 @@ export function Header() {
 
           {/* ダークモード切替ボタン */}
           <button
+            type="button"
             onClick={toggleDarkMode}
             className="ml-2 rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label={isDark ? t("lightMode") : t("darkMode")}
@@ -72,6 +70,7 @@ export function Header() {
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 className="h-5 w-5"
+                aria-hidden="true"
               >
                 <path d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM10 15a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 15zM10 7a3 3 0 100 6 3 3 0 000-6zM15.657 5.404a.75.75 0 10-1.06-1.06l-1.061 1.06a.75.75 0 001.06 1.06l1.06-1.06zM6.464 14.596a.75.75 0 10-1.06-1.06l-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0118 10zM5 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 015 10zM14.596 15.657a.75.75 0 001.06-1.06l-1.06-1.061a.75.75 0 10-1.06 1.06l1.06 1.06zM5.404 6.464a.75.75 0 001.06-1.06l-1.06-1.06a.75.75 0 10-1.06 1.06l1.06 1.06z" />
               </svg>
@@ -82,6 +81,7 @@ export function Header() {
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 className="h-5 w-5"
+                aria-hidden="true"
               >
                 <path
                   fillRule="evenodd"

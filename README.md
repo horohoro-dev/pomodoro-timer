@@ -47,7 +47,7 @@ docker compose exec app pnpm dev
 
 `.env.local` に以下を設定:
 
-```
+```bash
 AUTH_SECRET=
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
@@ -107,7 +107,7 @@ pnpm db:studio     # Drizzle Studio 起動
 
 ## プロジェクト構成
 
-```
+```text
 src/
 ├── app/
 │   ├── (app)/           # アプリ内ページ（共通レイアウト適用）

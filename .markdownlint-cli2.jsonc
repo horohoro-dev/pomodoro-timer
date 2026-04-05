@@ -1,0 +1,24 @@
+{
+  // markdownlint-cli2 設定
+  "globs": ["**/*.md"],
+  "config": {
+    "default": true,
+    // 行の長さ制限を無効化（長いURLやテーブルがあるため）
+    "MD013": false,
+    // インラインHTMLを許可
+    "MD033": false,
+    // 最初の見出しレベル（h1以外も許可）
+    "MD041": false,
+    // テーブルカラムスタイルの強制を無効化（compact記法を許可）
+    "MD060": false
+  },
+  "ignores": [
+    "node_modules/**",
+    ".next/**",
+    "coverage/**",
+    ".agents/**",
+    ".omc/**",
+    ".claude/**",
+    "MEMO/**"
+  ]
+}

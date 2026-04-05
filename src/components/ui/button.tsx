@@ -1,5 +1,5 @@
-import { forwardRef, type ButtonHTMLAttributes } from "react";
-import { tv, type VariantProps, cn } from "@/lib/styles";
+import { type ButtonHTMLAttributes, forwardRef } from "react";
+import { cn, tv, type VariantProps } from "@/lib/styles";
 
 // ボタンコンポーネントのバリアント定義
 const buttonVariants = tv({
@@ -42,7 +42,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 Button.displayName = "Button";
