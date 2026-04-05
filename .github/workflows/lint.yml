@@ -23,3 +23,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v19

@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome ci .",
+    "lint": "biome ci . && markdownlint-cli2",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "typecheck": "tsc --noEmit",
@@ -54,6 +54,7 @@
     "dotenv": "^17.3.1",
     "drizzle-kit": "^0.31.10",
     "jsdom": "^29.0.1",
+    "markdownlint-cli2": "^0.22.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.2"
