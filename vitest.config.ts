@@ -13,10 +13,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "json-summary"],
       reportsDirectory: "./coverage",
-      include: [
-        "src/lib/**/*.{ts,tsx}",
-        "src/components/**/*.{ts,tsx}",
-      ],
+      include: ["src/lib/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
       exclude: [
         "src/**/*.{test,spec}.{ts,tsx}",
         "src/**/*.d.ts",
