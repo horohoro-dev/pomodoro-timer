@@ -37,9 +37,20 @@ docker compose down -v
 - `Cmd + Shift + P` → `Dev Containers: Reopen in Container` で起動
 - Docker 内の `node_modules` がそのまま使えるため、ホスト側で `pnpm install` は不要
 
+### VS Code + Claude Code を併用する場合
+
+`docker compose run --rm app` と Dev Containers は**併用しない**こと。
+`run --rm` は独立したコンテナを作成し、`/exit` 時にコンテナごと削除されるため、VS Code の接続先も失われる。
+
+**推奨手順：**
+
+1. VS Code で `Dev Containers: Reopen in Container` を実行（コンテナが起動する）
+1. ホスト側の別ターミナルから Claude Code を起動：`docker exec -it pomodoro-timer claude`
+1. `/exit` してもコンテナは生き続け、VS Code も切断されない
+
 ## 備考
 
-- Docker 内の `node_modules` は named volume で分離されている（Linux 用バイナリ）
+- Docker 内の `node_modules` は named volume で分離されている（Linux 用バイナリ）/
 - ホスト側では `pnpm install` を実行しない（セキュリティ上、node_modules はDocker内のみに配置）
 - `pnpm install` は必ず Claude Code セッション内または VS Code Dev Containers のターミナルで実行すること（ホストからの `docker compose run` で実行すると別のボリュームにインストールされ、Dev Containers / Claude Code 側に反映されない）
 - `package.json` を変更したら Docker 内で `pnpm install` を実行すること
