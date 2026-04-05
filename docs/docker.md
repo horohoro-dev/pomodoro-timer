@@ -3,26 +3,32 @@
 ## docker compose（推奨）
 
 - ビルド
+
 ```sh
 docker compose build --no-cache
 ```
+
 - 初回起動 or package.json 変更時(node_modules インストール)
   初回はまだpackage.jsonがマウントされていない
+
 ```sh
 docker compose run --rm app bash -c "pnpm install"
 ```
 
 - 起動（Claude Code）
+
 ```sh
 docker compose run --rm app
 ```
 
 - 停止・削除
+
 ```sh
 docker compose down
 ```
 
 - node_modules ボリューム削除（リセット時）
+
 ```sh
 docker compose down -v
 ```
