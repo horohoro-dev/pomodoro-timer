@@ -9,6 +9,7 @@ services:
       - ${HOME}/.claude.json:/root/.claude.json
       - ${HOME}/.agents:/root/.agents
       - ${HOME}/.gitconfig:/root/.gitconfig:ro
+      - claude-sessions:/root/.claude/projects
       - node_modules:/workspace/node_modules
     working_dir: /workspace
     stdin_open: true
@@ -16,3 +17,4 @@ services:
 
 volumes:
   node_modules:
+  claude-sessions:
