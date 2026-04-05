@@ -11,6 +11,9 @@ services:
       - ${HOME}/.gitconfig:/root/.gitconfig:ro
       - claude-sessions:/root/.claude/projects
       - node_modules:/workspace/node_modules
+    ports:
+      - "3000:3000"
+      - "63244:63244"
     working_dir: /workspace
     stdin_open: true
     tty: true
