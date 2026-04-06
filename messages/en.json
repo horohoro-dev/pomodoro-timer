@@ -29,7 +29,15 @@
     "sets": "Sets",
     "placeholder": "Timer feature coming soon",
     "loopCount": "Loop {count}",
-    "totalTime": "Total {time}"
+    "totalTime": "Total {time}",
+    "settings": "Settings",
+    "workDuration": "Work",
+    "breakDuration": "Break",
+    "longBreakDuration": "Long Break",
+    "longBreakInterval": "Long Break Every",
+    "minutes": "{value} min",
+    "loops": "{value} loops",
+    "closeSettings": "Close settings"
   },
   "dashboard": {
     "title": "Dashboard",

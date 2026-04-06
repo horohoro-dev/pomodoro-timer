@@ -29,7 +29,15 @@
     "sets": "セット",
     "placeholder": "タイマー機能は近日公開予定です",
     "loopCount": "ループ {count} 周目",
-    "totalTime": "合計 {time}"
+    "totalTime": "合計 {time}",
+    "settings": "設定",
+    "workDuration": "作業時間",
+    "breakDuration": "休憩時間",
+    "longBreakDuration": "長休憩時間",
+    "longBreakInterval": "長休憩間隔",
+    "minutes": "{value}分",
+    "loops": "{value}ループ",
+    "closeSettings": "設定を閉じる"
   },
   "dashboard": {
     "title": "ダッシュボード",
