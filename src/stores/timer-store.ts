@@ -41,7 +41,7 @@ export interface TimerActions {
 }
 
 /** デフォルト設定 */
-const DEFAULT_CONFIG: TimerConfig = {
+export const DEFAULT_CONFIG: TimerConfig = {
   workDuration: 1500, // 25分
   breakDuration: 300, // 5分
   longBreakDuration: 900, // 15分

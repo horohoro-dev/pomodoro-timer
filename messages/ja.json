@@ -37,7 +37,8 @@
     "longBreakInterval": "長休憩間隔",
     "minutes": "{value}分",
     "loops": "{value}ループ",
-    "closeSettings": "設定を閉じる"
+    "closeSettings": "設定を閉じる",
+    "resetToDefault": "デフォルトに戻す"
   },
   "dashboard": {
     "title": "ダッシュボード",

@@ -37,7 +37,8 @@
     "longBreakInterval": "Long Break Every",
     "minutes": "{value} min",
     "loops": "{value} loops",
-    "closeSettings": "Close settings"
+    "closeSettings": "Close settings",
+    "resetToDefault": "Reset to default"
   },
   "dashboard": {
     "title": "Dashboard",

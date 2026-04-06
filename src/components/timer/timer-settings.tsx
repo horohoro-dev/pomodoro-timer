@@ -3,7 +3,7 @@
 
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
-import { useTimerStore } from "@/stores/timer-store";
+import { DEFAULT_CONFIG, useTimerStore } from "@/stores/timer-store";
 
 // 設定項目の定義
 interface SettingItem {
@@ -243,7 +243,7 @@ export function TimerSettings({ isOpen, onClose }: TimerSettingsProps) {
         </button>
       </div>
 
-      <div className="flex flex-col gap-5 px-4 py-3">
+      <div className="flex flex-1 flex-col gap-5 px-4 py-3">
         {SETTINGS.map((item) => (
           <SettingRow
             key={item.key}
@@ -252,6 +252,23 @@ export function TimerSettings({ isOpen, onClose }: TimerSettingsProps) {
             onUpdate={(newValue) => updateConfig({ [item.key]: newValue })}
           />
         ))}
+      </div>
+
+      <div className="px-4 pb-4">
+        <button
+          type="button"
+          onClick={() => updateConfig(DEFAULT_CONFIG)}
+          disabled={
+            config.workDuration === DEFAULT_CONFIG.workDuration &&
+            config.breakDuration === DEFAULT_CONFIG.breakDuration &&
+            config.longBreakDuration === DEFAULT_CONFIG.longBreakDuration &&
+            config.longBreakInterval === DEFAULT_CONFIG.longBreakInterval
+          }
+          aria-label={t("resetToDefault")}
+          className="w-full rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
+        >
+          {t("resetToDefault")}
+        </button>
       </div>
     </div>
   );

@@ -13,6 +13,12 @@ const mockOnClose = vi.fn();
 
 vi.mock("@/stores/timer-store", () => ({
   useTimerStore: vi.fn(),
+  DEFAULT_CONFIG: {
+    workDuration: 1500,
+    breakDuration: 300,
+    longBreakDuration: 900,
+    longBreakInterval: 4,
+  },
 }));
 
 vi.mock("next-intl", () => ({
@@ -24,6 +30,7 @@ vi.mock("next-intl", () => ({
       longBreakDuration: "長休憩時間",
       longBreakInterval: "長休憩間隔",
       closeSettings: "閉じる",
+      resetToDefault: "デフォルトに戻す",
     };
     if (key === "minutes") return `${params?.value}分`;
     if (key === "loops") return `${params?.value}ループ`;
@@ -149,5 +156,37 @@ describe("TimerSettings", () => {
     render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
     await userEvent.keyboard("{Escape}");
     expect(mockOnClose).toHaveBeenCalledOnce();
+  });
+
+  it("デフォルトに戻すボタンで全設定がデフォルト値にリセットされる", async () => {
+    mockUseTimerStore.mockImplementation((selector) =>
+      selector(
+        makeState({
+          config: {
+            workDuration: 3000,
+            breakDuration: 600,
+            longBreakDuration: 1800,
+            longBreakInterval: 6,
+          },
+        }),
+      ),
+    );
+    render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
+    await userEvent.click(
+      screen.getByRole("button", { name: "デフォルトに戻す" }),
+    );
+    expect(mockUpdateConfig).toHaveBeenCalledWith({
+      workDuration: 1500,
+      breakDuration: 300,
+      longBreakDuration: 900,
+      longBreakInterval: 4,
+    });
+  });
+
+  it("設定がデフォルト値のときデフォルトに戻すボタンが disabled", () => {
+    render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
+    expect(
+      screen.getByRole("button", { name: "デフォルトに戻す" }),
+    ).toBeDisabled();
   });
 });
