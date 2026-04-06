@@ -89,7 +89,7 @@ function StepButton({
   direction: "dec" | "inc";
   latestValue: React.RefObject<number>;
   onUpdate: (newValue: number) => void;
-  t: (key: string, params?: Record<string, unknown>) => string;
+  t: (key: string, params?: Record<string, string | number | Date>) => string;
 }) {
   const displayValue = item.toDisplay(latestValue.current);
   const disabled =
@@ -138,7 +138,7 @@ function SettingRow({
   item: SettingItem;
   value: number;
   onUpdate: (newValue: number) => void;
-  t: (key: string, params?: Record<string, unknown>) => string;
+  t: (key: string, params?: Record<string, string | number | Date>) => string;
 }) {
   const displayValue = item.toDisplay(value);
   const latestValue = useRef(value);
