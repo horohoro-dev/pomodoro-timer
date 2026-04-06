@@ -43,6 +43,7 @@ export function TimerDisplay() {
       {/* 一時停止オーバーレイ */}
       {isPaused && (
         <div
+          role="status"
           className="absolute inset-0 flex items-center justify-center rounded-full bg-background/60"
           aria-label={t("pause")}
         >

@@ -25,7 +25,9 @@ describe("TimerStatus", () => {
   it("ループ周回数を表示する", () => {
     mockUseTimerStore.mockImplementation(
       (selector: Parameters<typeof useTimerStore>[0]) =>
-        selector({ loopCount: 3, totalWorkSeconds: 4500 }),
+        selector({ loopCount: 3, totalWorkSeconds: 4500 } as Parameters<
+          typeof selector
+        >[0]),
     );
     render(<TimerStatus />);
     expect(screen.getByText(/ループ 3 周目/)).toBeInTheDocument();
@@ -34,7 +36,9 @@ describe("TimerStatus", () => {
   it("累計作業時間を表示する（時間+分）", () => {
     mockUseTimerStore.mockImplementation(
       (selector: Parameters<typeof useTimerStore>[0]) =>
-        selector({ loopCount: 5, totalWorkSeconds: 9060 }),
+        selector({ loopCount: 5, totalWorkSeconds: 9060 } as Parameters<
+          typeof selector
+        >[0]),
     );
     render(<TimerStatus />);
     // 9060秒 = 2h 31m
@@ -44,7 +48,9 @@ describe("TimerStatus", () => {
   it("0秒の場合は 0m と表示する", () => {
     mockUseTimerStore.mockImplementation(
       (selector: Parameters<typeof useTimerStore>[0]) =>
-        selector({ loopCount: 0, totalWorkSeconds: 0 }),
+        selector({ loopCount: 0, totalWorkSeconds: 0 } as Parameters<
+          typeof selector
+        >[0]),
     );
     render(<TimerStatus />);
     expect(screen.getByText(/合計 0m/)).toBeInTheDocument();
