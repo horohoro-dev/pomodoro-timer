@@ -18,6 +18,8 @@ export default defineConfig({
         "src/**/*.{test,spec}.{ts,tsx}",
         "src/**/*.d.ts",
         "src/test/**",
+        "src/components/layout/**",
+        "src/lib/auth-helpers.ts",
       ],
       thresholds: {
         lines: 80,

@@ -27,7 +27,18 @@
     "skip": "Skip",
     "session": "Session",
     "sets": "Sets",
-    "placeholder": "Timer feature coming soon"
+    "placeholder": "Timer feature coming soon",
+    "loopCount": "Loop {count}",
+    "totalTime": "Total {time}",
+    "settings": "Settings",
+    "workDuration": "Work",
+    "breakDuration": "Break",
+    "longBreakDuration": "Long Break",
+    "longBreakInterval": "Long Break Every",
+    "minutes": "{value} min",
+    "loops": "{value} loops",
+    "closeSettings": "Close settings",
+    "resetToDefault": "Reset to default"
   },
   "dashboard": {
     "title": "Dashboard",

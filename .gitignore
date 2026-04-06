@@ -37,6 +37,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# superpowers brainstorm
+.superpowers/
+
 # vercel
 .vercel
 
