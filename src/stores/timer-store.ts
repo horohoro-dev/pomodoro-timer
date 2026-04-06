@@ -1,4 +1,10 @@
-// ポモドーロタイマーの状態管理ストア
+/**
+ * ポモドーロタイマーの状態管理ストア（Zustand）
+ *
+ * タイマーのフェーズ（作業・休憩・長休憩・待機）、残り時間、ループ回数、
+ * 累計作業時間を管理する。設定値（作業時間・休憩時間等）はlocalStorageに永続化。
+ * Date.now()ベースのdrift防止機構を備え、setIntervalのズレに依存しない。
+ */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

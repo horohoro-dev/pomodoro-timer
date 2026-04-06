@@ -1,4 +1,9 @@
-// src/components/timer/timer-status.tsx
+/**
+ * タイマーステータスコンポーネント
+ *
+ * 現在のループ周回数と累計作業時間を表示する。
+ * 累計時間は「Xh Ym」形式でフォーマットされる。
+ */
 "use client";
 
 import { useTranslations } from "next-intl";

@@ -1,4 +1,11 @@
-// src/components/timer/timer-settings.tsx
+/**
+ * タイマー設定ドロワーコンポーネント
+ *
+ * 画面右からスライドインするドロワーで、作業時間・休憩時間・長休憩時間・
+ * 長休憩間隔を+/−ボタンで変更できる。10単位と1単位のボタンを備え、
+ * 長押しで連続変更にも対応。設定値はZustandストア経由でlocalStorageに永続化。
+ * idle時のみ操作可能で、タイマー開始時に自動で閉じる。
+ */
 "use client";
 
 import { useTranslations } from "next-intl";
