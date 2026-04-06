@@ -82,15 +82,14 @@ function StepButton({
   direction,
   latestValue,
   onUpdate,
-  t,
 }: {
   item: SettingItem;
   step: number;
   direction: "dec" | "inc";
   latestValue: React.RefObject<number>;
   onUpdate: (newValue: number) => void;
-  t: (key: string, params?: Record<string, string | number | Date>) => string;
 }) {
+  const t = useTranslations("timer");
   const displayValue = item.toDisplay(latestValue.current);
   const disabled =
     direction === "dec" ? displayValue <= item.min : displayValue >= item.max;
@@ -133,13 +132,12 @@ function SettingRow({
   item,
   value,
   onUpdate,
-  t,
 }: {
   item: SettingItem;
   value: number;
   onUpdate: (newValue: number) => void;
-  t: (key: string, params?: Record<string, string | number | Date>) => string;
 }) {
+  const t = useTranslations("timer");
   const displayValue = item.toDisplay(value);
   const latestValue = useRef(value);
   latestValue.current = value;
@@ -159,7 +157,6 @@ function SettingRow({
             direction="dec"
             latestValue={latestValue}
             onUpdate={onUpdate}
-            t={t}
           />
         ))}
         <span className="flex-1 text-center text-sm font-semibold text-foreground">
@@ -174,7 +171,6 @@ function SettingRow({
             direction="inc"
             latestValue={latestValue}
             onUpdate={onUpdate}
-            t={t}
           />
         ))}
       </div>
@@ -254,7 +250,6 @@ export function TimerSettings({ isOpen, onClose }: TimerSettingsProps) {
             item={item}
             value={config[item.key]}
             onUpdate={(newValue) => updateConfig({ [item.key]: newValue })}
-            t={t}
           />
         ))}
       </div>
