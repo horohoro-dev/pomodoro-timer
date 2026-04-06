@@ -59,7 +59,7 @@ function Button({ className, variant, size, ref, ...props }: ButtonProps & { ref
 
 ## 3. SVGインラインアイコン → lucide-react に置き換え
 
-### 対象ファイル
+### 対象ファイル（アイコン）
 
 - `src/components/timer/timer-controls.tsx` — ▶（再生）、⏸（一時停止）、↻（リセット）
 - `src/components/timer/timer-display.tsx` — ⏸（一時停止オーバーレイ）
@@ -74,7 +74,7 @@ function Button({ className, variant, size, ref, ...props }: ButtonProps & { ref
 | ↻ SVG | `<RotateCcw />` |
 | ⚙ 絵文字 | `<Settings />` |
 
-### 理由
+### 置き換えの理由
 
 - Unicode絵文字は環境によって表示が変わるリスクがある
 - インラインSVGは保守が面倒
@@ -84,7 +84,7 @@ function Button({ className, variant, size, ref, ...props }: ButtonProps & { ref
 
 ## 4. useLongPress の切り出し（任意）
 
-### 対象ファイル
+### 対象ファイル（useLongPress）
 
 - `src/components/timer/timer-settings.tsx`（現在230行）
 

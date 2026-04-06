@@ -28,7 +28,7 @@
 
 ## コンポーネント構成
 
-```
+```text
 timer/
 ├── timer-display.tsx      （既存）
 ├── timer-controls.tsx     （既存）
