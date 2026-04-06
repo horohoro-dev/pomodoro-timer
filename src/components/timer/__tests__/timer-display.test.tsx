@@ -15,6 +15,7 @@ vi.mock("next-intl", () => ({
       work: "作業",
       break: "休憩",
       longBreak: "長い休憩",
+      pause: "一時停止",
     };
     return map[key] ?? key;
   },
@@ -64,5 +65,44 @@ describe("TimerDisplay", () => {
     );
     render(<TimerDisplay />);
     expect(screen.getByText("01:05")).toBeInTheDocument();
+  });
+
+  it("一時停止中はオーバーレイが表示される", () => {
+    mockUseTimerStore.mockImplementation(
+      (selector: (s: TimerState & TimerActions) => unknown) =>
+        selector({
+          remainingSeconds: 1200,
+          phase: "work",
+          isRunning: false,
+        } as TimerState & TimerActions),
+    );
+    render(<TimerDisplay />);
+    expect(screen.getByLabelText("一時停止")).toBeInTheDocument();
+  });
+
+  it("実行中はオーバーレイが表示されない", () => {
+    mockUseTimerStore.mockImplementation(
+      (selector: (s: TimerState & TimerActions) => unknown) =>
+        selector({
+          remainingSeconds: 1200,
+          phase: "work",
+          isRunning: true,
+        } as TimerState & TimerActions),
+    );
+    render(<TimerDisplay />);
+    expect(screen.queryByLabelText("一時停止")).not.toBeInTheDocument();
+  });
+
+  it("idle状態ではオーバーレイが表示されない", () => {
+    mockUseTimerStore.mockImplementation(
+      (selector: (s: TimerState & TimerActions) => unknown) =>
+        selector({
+          remainingSeconds: 1500,
+          phase: "idle",
+          isRunning: false,
+        } as TimerState & TimerActions),
+    );
+    render(<TimerDisplay />);
+    expect(screen.queryByLabelText("一時停止")).not.toBeInTheDocument();
   });
 });

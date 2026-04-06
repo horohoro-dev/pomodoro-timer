@@ -46,7 +46,7 @@ describe("TimerControls", () => {
       ...overrides,
     }) as TimerState & TimerActions;
 
-  it("停止中は開始ボタンを表示する", () => {
+  it("停止中は▶ボタンを表示する", () => {
     mockUseTimerStore.mockImplementation((selector) =>
       selector(makeState({ isRunning: false, phase: "idle" })),
     );
@@ -54,7 +54,7 @@ describe("TimerControls", () => {
     expect(screen.getByRole("button", { name: "開始" })).toBeInTheDocument();
   });
 
-  it("実行中は一時停止ボタンを表示する", () => {
+  it("実行中は⏸ボタンを表示する", () => {
     mockUseTimerStore.mockImplementation((selector) =>
       selector(makeState({ isRunning: true, phase: "work" })),
     );
@@ -64,7 +64,7 @@ describe("TimerControls", () => {
     ).toBeInTheDocument();
   });
 
-  it("開始ボタンクリックで start が呼ばれる", async () => {
+  it("▶ボタンクリックで start が呼ばれる", async () => {
     mockUseTimerStore.mockImplementation((selector) =>
       selector(makeState({ isRunning: false, phase: "idle" })),
     );

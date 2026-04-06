@@ -80,27 +80,41 @@ describe("TimerSettings", () => {
     expect(screen.getByText("4ループ")).toBeInTheDocument();
   });
 
-  it("作業時間の+ボタンで updateConfig が5分増加で呼ばれる", async () => {
+  it("作業時間の+1ボタンで updateConfig が1分増加で呼ばれる", async () => {
     render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
-    const buttons = screen.getAllByRole("button", { name: /増やす/ });
-    await userEvent.click(buttons[0]);
-    expect(mockUpdateConfig).toHaveBeenCalledWith({ workDuration: 1800 });
+    await userEvent.click(
+      screen.getByRole("button", { name: "作業時間を1分増やす" }),
+    );
+    expect(mockUpdateConfig).toHaveBeenCalledWith({ workDuration: 1560 });
   });
 
-  it("作業時間の−ボタンで updateConfig が5分減少で呼ばれる", async () => {
+  it("作業時間の+10ボタンで updateConfig が10分増加で呼ばれる", async () => {
     render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
-    const buttons = screen.getAllByRole("button", { name: /減らす/ });
-    await userEvent.click(buttons[0]);
-    expect(mockUpdateConfig).toHaveBeenCalledWith({ workDuration: 1200 });
+    await userEvent.click(
+      screen.getByRole("button", { name: "作業時間を10分増やす" }),
+    );
+    expect(mockUpdateConfig).toHaveBeenCalledWith({ workDuration: 2100 });
   });
 
-  it("作業時間が最小値（5分）のとき−ボタンが disabled", () => {
+  it("作業時間の−1ボタンで updateConfig が1分減少で呼ばれる", async () => {
+    render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
+    await userEvent.click(
+      screen.getByRole("button", { name: "作業時間を1分減らす" }),
+    );
+    expect(mockUpdateConfig).toHaveBeenCalledWith({ workDuration: 1440 });
+  });
+
+  it("作業時間が最小値（1分）のとき−ボタンが disabled", () => {
     mockUseTimerStore.mockImplementation((selector) =>
-      selector(makeState({ config: { ...defaultConfig, workDuration: 300 } })),
+      selector(makeState({ config: { ...defaultConfig, workDuration: 60 } })),
     );
     render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
-    const buttons = screen.getAllByRole("button", { name: /減らす/ });
-    expect(buttons[0]).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "作業時間を1分減らす" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "作業時間を10分減らす" }),
+    ).toBeDisabled();
   });
 
   it("作業時間が最大値（120分）のとき+ボタンが disabled", () => {
@@ -108,14 +122,19 @@ describe("TimerSettings", () => {
       selector(makeState({ config: { ...defaultConfig, workDuration: 7200 } })),
     );
     render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
-    const buttons = screen.getAllByRole("button", { name: /増やす/ });
-    expect(buttons[0]).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "作業時間を1分増やす" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "作業時間を10分増やす" }),
+    ).toBeDisabled();
   });
 
   it("長休憩間隔の+ボタンで updateConfig が1増加で呼ばれる", async () => {
     render(<TimerSettings isOpen={true} onClose={mockOnClose} />);
-    const buttons = screen.getAllByRole("button", { name: /増やす/ });
-    await userEvent.click(buttons[3]);
+    await userEvent.click(
+      screen.getByRole("button", { name: "長休憩間隔を1増やす" }),
+    );
     expect(mockUpdateConfig).toHaveBeenCalledWith({ longBreakInterval: 5 });
   });
 

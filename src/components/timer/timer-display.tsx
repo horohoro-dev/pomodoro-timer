@@ -15,6 +15,7 @@ export function TimerDisplay() {
   const t = useTranslations("timer");
   const remainingSeconds = useTimerStore((s) => s.remainingSeconds);
   const phase = useTimerStore((s) => s.phase);
+  const isRunning = useTimerStore((s) => s.isRunning);
 
   const phaseLabel =
     phase === "work" || phase === "idle"
@@ -23,12 +24,36 @@ export function TimerDisplay() {
         ? t("longBreak")
         : t("break");
 
+  // 一時停止中 = タイマー開始済みだが停止中
+  const isPaused = phase !== "idle" && !isRunning;
+
   return (
-    <div className="flex h-55 w-55 flex-col items-center justify-center rounded-full border-4 border-primary">
+    <div className="relative flex h-55 w-55 flex-col items-center justify-center rounded-full border-4 border-primary">
       <span className="text-5xl font-bold tabular-nums tracking-tight text-foreground">
         {formatTime(remainingSeconds)}
       </span>
       <span className="mt-1 text-sm text-muted-foreground">{phaseLabel}</span>
+
+      {/* 一時停止オーバーレイ */}
+      {isPaused && (
+        <div
+          className="absolute inset-0 flex items-center justify-center rounded-full bg-background/60"
+          aria-label={t("pause")}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            className="h-16 w-16 text-muted-foreground/70"
+            aria-hidden="true"
+          >
+            <line x1="8" y1="5" x2="8" y2="19" />
+            <line x1="16" y1="5" x2="16" y2="19" />
+          </svg>
+        </div>
+      )}
     </div>
   );
 }
