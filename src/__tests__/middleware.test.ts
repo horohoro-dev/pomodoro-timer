@@ -184,7 +184,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: true,
       });
 
-      const response = middlewareCallback(req);
+      middlewareCallback(req);
 
       expect(NextResponse.next).toHaveBeenCalled();
       // NextResponse.next()の戻り値のcookies.setが呼ばれることを検証
