@@ -10,7 +10,7 @@ export default async function DashboardPage() {
 
   // 未認証ユーザーはログインページへリダイレクト
   if (!user) {
-    redirect("/api/auth/signin");
+    redirect("/welcome");
   }
 
   return (
