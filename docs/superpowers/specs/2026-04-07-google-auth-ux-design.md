@@ -34,26 +34,23 @@ pomodoroSessions: id, user_id, start_time, end_time, duration, type, created_at
 ### 変更後
 
 ```
-users: id, name(nullable), email(nullable/unique), emailVerified(nullable), image(nullable)
-accounts: userId, type, provider, providerAccountId, tokens... （変更なし）
+users: id のみ
 pomodoroSessions: id, user_id, start_time, end_time, duration, type, created_at （変更なし）
 ```
 
+- `accounts`テーブル: DrizzleAdapter不使用のため削除
 - `sessions`テーブル: JWT戦略のため削除
 - `verificationTokens`テーブル: Email認証不使用のため削除
-- `users`テーブルの個人情報カラム（name, email, emailVerified, image）: **nullableのまま残す**
+- `users`テーブル: `id`カラムのみ残し、`name`, `email`, `emailVerified`, `image`を削除
 
-**カラムを残す理由:**
-DrizzleAdapterは内部的に`name`/`email`/`image`を含むINSERT文を生成する。
-カラムを物理削除するとSQL実行時にエラーになる。
-カラムは存在するがアプリコード側で読み取り・公開しないことでプライバシーを担保する。
-Auth.jsのcallbackで`createUser`時にnullを上書きする対応も検討したが、
-Adapterの内部動作に依存するカスタマイズは保守コストが高いため、シンプルにカラムを残す方針とする。
+### DrizzleAdapterを使わない理由
 
-**セキュリティ対策:**
-- APIレスポンスやログに個人情報カラムの値を含めない
-- `getCurrentUser()`はJWTセッションからのみ情報を返す（DBクエリしない）
-- 個人情報はGoogle OAuth初回サインイン時にAdapterがDBに書くが、アプリコードでは一切参照しない
+Auth.jsのDrizzleAdapterは`users`テーブルに個人情報（name, email, image）を
+自動書き込みする。これは「DBに個人情報を保存しない」要件と根本的に衝突する。
+
+JWT戦略ではセッション管理にDBは不要。ユーザー識別にはGoogle sub IDを使い、
+初回サインイン時にsignInコールバックで`users`テーブルにidのみINSERTする。
+これによりAdapter層への依存がなくなり、テーブル設計が完全に自由になる。
 
 ### マイグレーション
 
@@ -65,16 +62,22 @@ Drizzle Kitの`db:generate` → `db:push`でNeon developブランチに適用す
 
 ```typescript
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db),
+  // adapter不使用: DBに個人情報を書かせないため
   providers: [Google({ ... })],
   session: { strategy: "jwt" },
   callbacks: {
-    jwt({ token, user, profile }) {
-      if (user) {
-        token.id = user.id;
+    async signIn({ user, profile }) {
+      // 初回サインイン時にusersテーブルにidのみINSERT
+      // Google sub IDをユーザーIDとして使用
+      if (profile?.sub) {
+        await ensureUserExists(profile.sub);
       }
+      return true;
+    },
+    jwt({ token, profile }) {
       // サインイン時にGoogleプロフィールからアバター・名前をJWTに載せる
       if (profile) {
+        token.id = profile.sub;
         token.picture = profile.picture;
         token.name = profile.name;
       }
@@ -90,15 +93,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   pages: {
-    signIn: "/welcome",  // カスタムサインインページ → ウェルカムページに変更
+    signIn: "/welcome",
   },
 });
 ```
 
+`ensureUserExists()`はDBにユーザーが存在しなければidのみINSERTするヘルパー関数。
+`src/lib/auth-helpers.ts`または`src/db/queries.ts`に配置する。
+
 **ポイント:**
-- `profile`はサインイン時のみ存在（Googleから返却されたプロフィール情報）
+- Adapter不使用 → DBに個人情報が書かれる余地がゼロ
+- `profile.sub`（Google sub ID）をユーザーIDとして使用
 - `token.picture`/`token.name`はJWTに保存（ブラウザcookie）、DBには書かない
-- DrizzleAdapterはusersテーブルに個人情報を書き込むが、アプリコードでは一切参照しない（DBに残るがアプリのI/Oには出ない）
 
 ## ルーティング変更
 
@@ -218,6 +224,6 @@ layout.tsx
 
 ## テスト方針
 
-- **ユニットテスト**: Auth.jsコールバック（JWT/session）のロジック
+- **ユニットテスト**: Auth.jsコールバック（JWT/session）のロジック、ensureUserExists
 - **コンポーネントテスト**: ヘッダーのユーザーメニュー表示切り替え、ウェルカムページのボタン動作
 - **ミドルウェアテスト**: cookie判定による初回リダイレクトロジック
