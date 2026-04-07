@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth-helpers";
+import { ROUTES } from "@/lib/routes";
 
 // ダッシュボードページ（サーバーコンポーネント）
 // 認証チェック付き
@@ -10,7 +11,7 @@ export default async function DashboardPage() {
 
   // 未認証ユーザーはログインページへリダイレクト
   if (!user) {
-    redirect("/welcome");
+    redirect(ROUTES.WELCOME);
   }
 
   return (

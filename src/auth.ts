@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { ensureUserExists } from "@/lib/auth-helpers";
+import { ROUTES } from "@/lib/routes";
 
 // Auth.js v5 設定（Adapter不使用、JWT-only）
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -43,6 +44,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   pages: {
-    signIn: "/welcome",
+    signIn: ROUTES.WELCOME,
   },
 });

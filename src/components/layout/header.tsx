@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/styles";
 import { UserMenu } from "./user-menu";
 
@@ -31,9 +32,9 @@ export function Header() {
 
   // ナビゲーションリンク定義（ダッシュボードは認証済みのみ表示）
   const navLinks = useMemo(() => {
-    const links = [{ href: "/timer", label: t("timer") }];
+    const links = [{ href: ROUTES.TIMER, label: t("timer") }];
     if (isAuthenticated) {
-      links.push({ href: "/dashboard", label: t("dashboard") });
+      links.push({ href: ROUTES.DASHBOARD, label: t("dashboard") });
     }
     return links;
   }, [isAuthenticated, t]);
