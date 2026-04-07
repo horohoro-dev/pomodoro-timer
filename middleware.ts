@@ -30,8 +30,8 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // /: 初回訪問ならウェルカムへリダイレクト
-  if (pathname === "/" && !hasVisited && !isAuthenticated) {
+  // / または /timer: 初回訪問ならウェルカムへリダイレクト
+  if ((pathname === "/" || pathname === "/timer") && !hasVisited && !isAuthenticated) {
     return NextResponse.redirect(new URL("/welcome", req.nextUrl.origin));
   }
 

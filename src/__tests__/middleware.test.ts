@@ -107,6 +107,22 @@ describe("ミドルウェア", () => {
       expect(NextResponse.redirect).not.toHaveBeenCalled();
       expect(NextResponse.next).toHaveBeenCalled();
     });
+
+    it("/timer + hasVisited cookieなし + 未認証 → /welcomeへリダイレクト", () => {
+      const req = createMockRequest({
+        pathname: "/timer",
+        hasVisitedCookie: false,
+        isAuthenticated: false,
+      });
+
+      middlewareCallback(req);
+
+      expect(NextResponse.redirect).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pathname: "/welcome",
+        }),
+      );
+    });
   });
 
   describe("ウェルカムページ", () => {
