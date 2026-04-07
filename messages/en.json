@@ -50,9 +50,18 @@
     "loginRequired": "Please log in to view the dashboard",
     "placeholder": "Dashboard feature coming soon"
   },
+  "welcome": {
+    "title": "Welcome to Pomodoro Timer",
+    "subtitle": "Boost your productivity with focused work and rest cycles",
+    "loginWithGoogle": "Login with Google",
+    "continueAsGuest": "Continue as Guest",
+    "guestNote": "Guest mode only supports the timer. Login is required to track your work history."
+  },
   "auth": {
     "loginWith": "Login with {provider}",
     "loginRequired": "Login required",
-    "guest": "Guest"
+    "guest": "Guest",
+    "logout": "Logout",
+    "loginWithGoogle": "Login with Google"
   }
 }

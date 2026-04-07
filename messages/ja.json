@@ -50,9 +50,18 @@
     "loginRequired": "ダッシュボードを見るにはログインが必要です",
     "placeholder": "ダッシュボード機能は近日公開予定です"
   },
+  "welcome": {
+    "title": "ポモドーロタイマーへようこそ",
+    "subtitle": "集中と休憩のリズムで生産性を高めましょう",
+    "loginWithGoogle": "Googleでログイン",
+    "continueAsGuest": "ゲストで始める",
+    "guestNote": "ゲストモードではタイマーのみ利用できます。作業履歴の記録にはログインが必要です。"
+  },
   "auth": {
     "loginWith": "{provider}でログイン",
     "loginRequired": "ログインが必要です",
-    "guest": "ゲスト"
+    "guest": "ゲスト",
+    "logout": "ログアウト",
+    "loginWithGoogle": "Googleでログイン"
   }
 }
