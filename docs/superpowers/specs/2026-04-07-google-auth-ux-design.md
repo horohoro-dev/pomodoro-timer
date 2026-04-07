@@ -34,14 +34,26 @@ pomodoroSessions: id, user_id, start_time, end_time, duration, type, created_at
 ### 変更後
 
 ```
-users: id （個人情報カラム全削除）
+users: id, name(nullable), email(nullable/unique), emailVerified(nullable), image(nullable)
 accounts: userId, type, provider, providerAccountId, tokens... （変更なし）
 pomodoroSessions: id, user_id, start_time, end_time, duration, type, created_at （変更なし）
 ```
 
 - `sessions`テーブル: JWT戦略のため削除
 - `verificationTokens`テーブル: Email認証不使用のため削除
-- `users.name`, `users.email`, `users.emailVerified`, `users.image`: 削除
+- `users`テーブルの個人情報カラム（name, email, emailVerified, image）: **nullableのまま残す**
+
+**カラムを残す理由:**
+DrizzleAdapterは内部的に`name`/`email`/`image`を含むINSERT文を生成する。
+カラムを物理削除するとSQL実行時にエラーになる。
+カラムは存在するがアプリコード側で読み取り・公開しないことでプライバシーを担保する。
+Auth.jsのcallbackで`createUser`時にnullを上書きする対応も検討したが、
+Adapterの内部動作に依存するカスタマイズは保守コストが高いため、シンプルにカラムを残す方針とする。
+
+**セキュリティ対策:**
+- APIレスポンスやログに個人情報カラムの値を含めない
+- `getCurrentUser()`はJWTセッションからのみ情報を返す（DBクエリしない）
+- 個人情報はGoogle OAuth初回サインイン時にAdapterがDBに書くが、アプリコードでは一切参照しない
 
 ### マイグレーション
 
@@ -86,7 +98,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 **ポイント:**
 - `profile`はサインイン時のみ存在（Googleから返却されたプロフィール情報）
 - `token.picture`/`token.name`はJWTに保存（ブラウザcookie）、DBには書かない
-- DrizzleAdapterは`users`テーブルにidのみ書き込む（カラムが存在しないため個人情報は自動的に無視される）
+- DrizzleAdapterはusersテーブルに個人情報を書き込むが、アプリコードでは一切参照しない（DBに残るがアプリのI/Oには出ない）
 
 ## ルーティング変更
 
@@ -108,28 +120,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ## 初回アクセス判定
 
-- `localStorage`に`hasVisited`キーで管理
-- クライアントコンポーネントで判定し、未設定時は`/welcome`にリダイレクト
-- ウェルカムページでGoogle/ゲスト選択後に`hasVisited = "true"`を設定
-- ゲスト選択時: `hasVisited`を設定して`/`に戻る
-- Google選択時: Auth.jsの`signIn("google")`を呼び、認証完了後に`hasVisited`を設定して`/`に戻る
+- **cookieベース**で管理（`hasVisited=true`）
+- middlewareでサーバーサイド判定し、未設定時は`/welcome`にリダイレクト（フラッシュなし）
+- ウェルカムページでGoogle/ゲスト選択後にcookieを設定
+- ゲスト選択時: Server Actionまたはクライアントからcookieを設定して`/`に戻る
+- Google選択時: Auth.jsの`signIn("google")`を呼び、認証完了後のcallbackでcookieを設定して`/`に戻る
 
-### 判定フロー
+**localStorageではなくcookieを使う理由:**
+localStorageはクライアントサイドでしか読めないため、ページが一瞬表示されてからリダイレクトされるフラッシュが発生する。
+cookieはmiddlewareで読めるため、サーバーサイドでリダイレクト判定でき、フラッシュが起きない。
+
+### 判定フロー（middleware内）
 
 ```
-ユーザーが`/`にアクセス
+リクエスト受信
   ↓
-localStorage.getItem("hasVisited") を確認
+cookie "hasVisited" を確認
   ↓
-未設定 → `/welcome`にリダイレクト
-設定済み → タイマー画面を表示
+未設定 かつ パスが "/" → `/welcome`にリダイレクト
+未設定 かつ パスが "/welcome" → そのまま表示
+設定済み かつ パスが "/" → タイマー画面を表示
+認証済み かつ パスが "/welcome" → `/`にリダイレクト
 ```
 
 ## ウェルカムページ (`/welcome`)
 
 - アプリ名 + 簡単な説明
 - 「Googleでログイン」ボタン → `signIn("google", { callbackUrl: "/" })`
-- 「ゲストで始める」ボタン → `localStorage.setItem("hasVisited", "true")` → `router.push("/")`
+- 「ゲストで始める」ボタン → cookieに`hasVisited=true`を設定 → `router.push("/")`
 - ログイン済みユーザーがアクセスした場合は`/`にリダイレクト
 - ヘッダーなし（独立したページ）
 
@@ -163,8 +181,10 @@ layout.tsx
 
 ### 変更後
 
+- `/`へのアクセスで`hasVisited` cookieなし → `/welcome`にリダイレクト
 - `/dashboard`へのアクセスで未認証 → `/welcome`にリダイレクト
 - `/welcome`へのアクセスで認証済み → `/`にリダイレクト
+- Google認証成功時（signInイベント）→ `hasVisited` cookieを設定
 
 ## i18nメッセージ追加
 
@@ -200,4 +220,4 @@ layout.tsx
 
 - **ユニットテスト**: Auth.jsコールバック（JWT/session）のロジック
 - **コンポーネントテスト**: ヘッダーのユーザーメニュー表示切り替え、ウェルカムページのボタン動作
-- **初回判定ロジック**: localStorage操作のテスト
+- **ミドルウェアテスト**: cookie判定による初回リダイレクトロジック
