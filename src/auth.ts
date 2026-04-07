@@ -1,38 +1,48 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { db } from "@/db";
+import { ensureUserExists } from "@/lib/auth-helpers";
 
-// Auth.js v5 設定
+// Auth.js v5 設定（Adapter不使用、JWT-only）
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db),
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
-  // JWT戦略を使用（セッションDBテーブルは不要）
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    // JWTにユーザーIDを含める
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
+    async signIn({ profile }) {
+      // 初回サインイン時にusersテーブルにidのみINSERT
+      // DB障害時はサインインを拒否（データ不整合防止）
+      if (profile?.sub) {
+        await ensureUserExists(profile.sub);
+      }
+      return true;
+    },
+    jwt({ token, profile }) {
+      // サインイン時（profileが存在する時）のみ実行される
+      // profile.subはGoogleの安定したユーザーID
+      // 注意: user.idはランダムUUIDなので使わない
+      if (profile) {
+        token.id = profile.sub;
+        token.picture = profile.picture;
+        token.name = profile.name;
       }
       return token;
     },
-    // セッションにユーザーIDを含める
     session({ session, token }) {
-      if (token.id && session.user) {
+      if (session.user) {
         session.user.id = token.id as string;
+        session.user.image = token.picture as string | undefined;
+        session.user.name = token.name as string | undefined;
       }
       return session;
     },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/welcome",
   },
 });

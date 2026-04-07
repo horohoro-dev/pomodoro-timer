@@ -1,7 +1,8 @@
 import { auth } from "@/auth";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 
-// サーバーコンポーネント用の認証ヘルパー
-// 現在のユーザー情報を取得する
+// サーバーコンポーネント用: 現在のユーザー情報を取得する
 export async function getCurrentUser() {
   const session = await auth();
 
@@ -10,4 +11,10 @@ export async function getCurrentUser() {
   }
 
   return session.user;
+}
+
+// サインイン時にユーザーレコードが存在しなければ作成する
+// INSERT + onConflictDoNothingで冪等。SELECT不要（TOCTOU競合回避）
+export async function ensureUserExists(googleSubId: string) {
+  await db.insert(users).values({ id: googleSubId }).onConflictDoNothing();
 }
