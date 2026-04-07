@@ -3,8 +3,14 @@ import { auth } from "@/auth";
 
 const COOKIE_NAME = "hasVisited";
 
+// 初回訪問判定をスキップするパス（ここに含まれないパスは全て初回判定対象）
+const SKIP_FIRST_VISIT_CHECK = ["/welcome"];
+
+// 認証が必要なパス
+const AUTH_REQUIRED_PREFIXES = ["/dashboard"];
+
 // Next.js 16 プロキシ（旧middleware）
-// auth()���ッパーでJWTデコード・期限チェックを行い、req.authでセッション取得
+// auth()ラッパーでJWTデコード・期限チェックを行い、req.authでセッション取得
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
   const hasVisited = req.cookies.get(COOKIE_NAME)?.value === "true";
@@ -30,20 +36,23 @@ export const proxy = auth((req) => {
     return response;
   }
 
-  // / または /timer: 初回訪問ならウェルカムへリダイレクト
+  // 認証が必要なパス: 未認証ならウェルカムへリダイレクト（callbackUrl付き）
   if (
-    (pathname === "/" || pathname === "/timer") &&
-    !hasVisited &&
-    !isAuthenticated
+    !isAuthenticated &&
+    AUTH_REQUIRED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
   ) {
-    return NextResponse.redirect(new URL("/welcome", req.nextUrl.origin));
-  }
-
-  // /dashboard: 未認証ならウェルカムへリダイレクト
-  if (pathname.startsWith("/dashboard") && !isAuthenticated) {
     const welcomeUrl = new URL("/welcome", req.nextUrl.origin);
     welcomeUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(welcomeUrl);
+  }
+
+  // 初回訪問ならウェルカムへリダイレクト（スキップリスト以外の全パス）
+  if (
+    !hasVisited &&
+    !isAuthenticated &&
+    !SKIP_FIRST_VISIT_CHECK.includes(pathname)
+  ) {
+    return NextResponse.redirect(new URL("/welcome", req.nextUrl.origin));
   }
 
   return NextResponse.next();
