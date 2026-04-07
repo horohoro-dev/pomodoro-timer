@@ -66,9 +66,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Google({ ... })],
   session: { strategy: "jwt" },
   callbacks: {
-    async signIn({ user, profile }) {
+    async signIn({ profile }) {
       // 初回サインイン時にusersテーブルにidのみINSERT
       // Google sub IDをユーザーIDとして使用
+      // DB障害時はサインインを拒否（データ不整合防止）
       if (profile?.sub) {
         await ensureUserExists(profile.sub);
       }
@@ -126,7 +127,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ## 初回アクセス判定
 
-- **cookieベース**で管理（`hasVisited=true`）
+- **cookieベース**で管理（`hasVisited=true`、`HttpOnly`, `Secure`, `SameSite=Lax`, `maxAge=10年`）
 - middlewareでサーバーサイド判定し、未設定時は`/welcome`にリダイレクト（フラッシュなし）
 - ウェルカムページでGoogle/ゲスト選択後にcookieを設定
 - ゲスト選択時: Server Actionまたはクライアントからcookieを設定して`/`に戻る
@@ -145,7 +146,9 @@ cookie "hasVisited" を確認
   ↓
 未設定 かつ パスが "/" → `/welcome`にリダイレクト
 未設定 かつ パスが "/welcome" → そのまま表示
+未設定 かつ パスが "/dashboard" → `/welcome`にリダイレクト
 設定済み かつ パスが "/" → タイマー画面を表示
+設定済み かつ 未認証 かつ パスが "/dashboard" → `/welcome`にリダイレクト
 認証済み かつ パスが "/welcome" → `/`にリダイレクト
 ```
 
