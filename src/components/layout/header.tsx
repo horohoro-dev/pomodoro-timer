@@ -2,14 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/styles";
+import { UserMenu } from "./user-menu";
 
 // アプリ内共通ヘッダーコンポーネント
 export function Header() {
   const t = useTranslations("common");
   const pathname = usePathname();
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
   const [isDark, setIsDark] = useState(false);
 
   // 初期ダークモード状態を取得
@@ -25,11 +29,14 @@ export function Header() {
     localStorage.setItem("theme", next ? "dark" : "light");
   }, [isDark]);
 
-  // ナビゲーションリンク定義
-  const navLinks = [
-    { href: "/timer", label: t("timer") },
-    { href: "/dashboard", label: t("dashboard") },
-  ];
+  // ナビゲーションリンク定義（ダッシュボードは認証済みのみ表示）
+  const navLinks = useMemo(() => {
+    const links = [{ href: "/timer", label: t("timer") }];
+    if (isAuthenticated) {
+      links.push({ href: "/dashboard", label: t("dashboard") });
+    }
+    return links;
+  }, [isAuthenticated, t]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card">
@@ -92,10 +99,10 @@ export function Header() {
             )}
           </button>
 
-          {/* 言語切替プレースホルダー */}
-          <span className="ml-1 rounded-md px-2 py-1 text-xs text-muted-foreground">
-            {t("language")}
-          </span>
+          {/* ユーザーメニュー */}
+          <div className="ml-1">
+            <UserMenu />
+          </div>
         </nav>
       </div>
     </header>
