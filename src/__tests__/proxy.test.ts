@@ -1,9 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// ミドルウェアのコールバックロジックを抽出してテストする
-// auth()はNextAuthのラッパーなので、コールバック関数を直接テストする
-
 // NextResponseのモック
 vi.mock("next/server", async () => {
   const actual =
@@ -27,22 +24,17 @@ vi.mock("next/server", async () => {
   };
 });
 
-// auth モジュールのモック: default exportがコールバックを受け取り、そのコールバックを返す
-let middlewareCallback: (
-  req: NextAuthRequest,
-) =>
-  | ReturnType<typeof NextResponse.next>
-  | ReturnType<typeof NextResponse.redirect>
-  | undefined;
+// auth()ラッパーのモック: コールバックをそのまま返す
+let proxyCallback: (req: NextAuthRequest) => unknown;
 
 vi.mock("@/auth", () => ({
-  auth: (cb: typeof middlewareCallback) => {
-    middlewareCallback = cb;
+  auth: (cb: typeof proxyCallback) => {
+    proxyCallback = cb;
     return cb;
   },
 }));
 
-// NextAuthRequestの型（auth()が拡張するリクエスト）
+// auth()が拡張するリクエストの型
 interface NextAuthRequest extends NextRequest {
   auth: { user: { id: string } } | null;
 }
@@ -71,11 +63,10 @@ function createMockRequest(options: {
   } as unknown as NextAuthRequest;
 }
 
-describe("ミドルウェア", () => {
+describe("proxy", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
-    // ミドルウェアモジュールを読み込み、コールバックを取得
-    await import("../../middleware");
+    await import("@/proxy");
   });
 
   describe("初回訪問判定", () => {
@@ -86,7 +77,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: false,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -102,7 +93,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: false,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).not.toHaveBeenCalled();
       expect(NextResponse.next).toHaveBeenCalled();
@@ -115,7 +106,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: false,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -129,11 +120,11 @@ describe("ミドルウェア", () => {
     it("/welcome + 認証済み → /へリダイレクト", () => {
       const req = createMockRequest({
         pathname: "/welcome",
-        hasVisitedCookie: true,
+        hasVisitedCookie: false,
         isAuthenticated: true,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -149,7 +140,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: false,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).not.toHaveBeenCalled();
       expect(NextResponse.next).toHaveBeenCalled();
@@ -164,7 +155,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: false,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).toHaveBeenCalled();
       const redirectUrl = (NextResponse.redirect as ReturnType<typeof vi.fn>)
@@ -180,7 +171,7 @@ describe("ミドルウェア", () => {
         isAuthenticated: false,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.redirect).toHaveBeenCalled();
       const redirectUrl = (NextResponse.redirect as ReturnType<typeof vi.fn>)
@@ -200,10 +191,9 @@ describe("ミドルウェア", () => {
         isAuthenticated: true,
       });
 
-      middlewareCallback(req);
+      proxyCallback(req);
 
       expect(NextResponse.next).toHaveBeenCalled();
-      // NextResponse.next()の戻り値のcookies.setが呼ばれることを検証
       const mockNextResponse = (NextResponse.next as ReturnType<typeof vi.fn>)
         .mock.results[0]?.value;
       expect(mockNextResponse.cookies.set).toHaveBeenCalledWith(
